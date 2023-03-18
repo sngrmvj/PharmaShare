@@ -12,11 +12,11 @@ services:
       - postgres-db-volume:/var/lib/postgresql/data
     restart: always
   service:
-    image: PharmaShare_back/
+    image: backend/
     ports:
       - 5000:5000
   web_ui:
-    image: PharmaShare_front/
+    image: frontend/
     ports:
       - 3000:3000
 
