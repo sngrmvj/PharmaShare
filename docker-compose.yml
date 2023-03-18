@@ -1,0 +1,24 @@
+version: "3.7"
+services:
+  postgres:
+    image: postgres:latest
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: workoutwatcher
+    volumes:
+      - postgres-db-volume:/var/lib/postgresql/data
+    restart: always
+  service:
+    image: PharmaShare_back/
+    ports:
+      - 5000:5000
+  web_ui:
+    image: PharmaShare_front/
+    ports:
+      - 3000:3000
+
+volumes:
+  postgres-db-volume:
