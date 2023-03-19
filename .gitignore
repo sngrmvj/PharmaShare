@@ -105,3 +105,4 @@ dist
 
 backend/.idea/
 frontend/node_modules/
+frontend/package-lock.json

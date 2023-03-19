@@ -18,12 +18,17 @@ const Signup = () => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [selectedOption, setSelectedOption] = useState('');
 
     useEffect(() => {
         if(localStorage.getItem('isLoggedIn') === "true"){
             navigate("/exercises");
         }
     });
+
+    const handleOptionChange = (event) => {
+        setSelectedOption(event.target.value);
+    };
 
 
     const navigateToLogin = () => {
@@ -75,7 +80,7 @@ const Signup = () => {
     return (
         <span>
             <div style={{padding:"20px"}}>
-                <header style={{color:"#2E8DCD", fontSize:"20px"}}><b>Workout Watcher</b></header>
+                <header style={{color:"#2E8DCD", fontSize:"20px"}}><b>PharmaShare</b></header>
             </div><br/>
 
             <span className='signupmain'>
@@ -118,6 +123,26 @@ const Signup = () => {
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                 /><br/><br/>
+
+
+                                <div>
+                                    <label class="container" style={{fontSize:"18px"}}>Supplier
+                                        <input type="radio"
+                                            value="Supplier"
+                                            checked={selectedOption === 'Supplier'}
+                                            onChange={handleOptionChange}
+                                        />
+                                        <span class="checkmark"></span>
+                                    </label><br/>
+                                    <label class="container" style={{fontSize:"18px"}}>Consumer
+                                        <input type="radio"
+                                            value="Consumer"
+                                            checked={selectedOption === 'Consumer'}
+                                            onChange={handleOptionChange}
+                                        />
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </div> <br/><br/>
 
                                 <button type="submit" className='btn'>Register</button><br/><br/>
 

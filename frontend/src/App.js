@@ -7,7 +7,6 @@ import {
 } from "react-router-dom";
 import Login from './Components/login/login';
 import Signup from './Components/signup/signup';
-import Analytics from './Components/analytics/analytics';
 
 function App() {
   return (
@@ -16,7 +15,6 @@ function App() {
         <Route exact path='/' element={<Login/>}></Route>
         <Route exact path='/register' element={<Signup/>}></Route>
         {/* <Route exact path='/menu' element={<MainMenu/>}></Route> */}
-        <Route exact path='/analytics' element={<Analytics/>}></Route>
       </Routes>
     </Router>
   );
