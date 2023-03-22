@@ -98,6 +98,9 @@ const SupplierMenu = () => {
                             <label for="person-name">Person Name:</label> <br/>
                             <input type="text" id="person-name" name="person-name" required /><br/><br/>
 
+                            <label for="city-name">City:</label> <br/>
+                            <input type="text" id="city-name" name="city-name" required /><br/><br/>
+
                             <label for="address">Address:</label><br/>
                             <textarea id="address" name="address" rows="4" cols="50" required></textarea><br/><br/>
 
