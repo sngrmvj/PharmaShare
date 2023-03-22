@@ -1,6 +1,6 @@
 
 
-.tabletSubmissionForm{
+.ViewRequestDiv{
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -12,7 +12,7 @@
 }
 
 
-.tabletSubmissionForm input{
+.ViewRequestDiv input{
     font-size: 16px;
     border: 0;
     border-bottom: 1px solid #ccc;
@@ -23,12 +23,12 @@
     cursor: text;
 }
 
-.tabletSubmissionForm input:focus {
+.ViewRequestDiv input:focus {
     outline: 0;
     border-bottom: 1px solid #2E8DCD;
 }
 
-.tabletSubmissionForm label {
+.ViewRequestDiv label {
     font-size: 15px;
     color: #2E8DCD;
     font-family: Arial, Helvetica, sans-serif;
@@ -36,7 +36,7 @@
 }
 
 
-.tabletSubmissionForm .btn {
+.ViewRequestDiv .btn {
     background: none;
     border: none;
     cursor: pointer;
@@ -51,7 +51,7 @@
     border: 2px solid #2E8DCD;
 }
 
-.tabletSubmissionForm .btn:hover { 
+.ViewRequestDiv .btn:hover { 
     /* outline: 2px dotted #55d7dc;  */
     border: 2px solid #2E8DCD;
     background-color: transparent;

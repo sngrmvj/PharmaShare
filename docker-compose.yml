@@ -7,18 +7,28 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: root
-      POSTGRES_DB: workoutwatcher
+      POSTGRES_DB: PharmaShare
     volumes:
       - postgres-db-volume:/var/lib/postgresql/data
     restart: always
-  service:
-    image: backend/
+  webserver:
+    build: backend/
+    container_name: PharmaShare-Server
     ports:
-      - 5000:5000
-  web_ui:
-    image: frontend/
+      - "5000:5000"
+    environment:
+      DATABASE_URL: postgresql://postgres:root@db:5432/PharmaShare
+    restart: always
+    depends_on:
+      postgres
+  interface:
+    build: frontend/
+    container_name: PharmaShare-UI
     ports:
-      - 3000:3000
+      - "3000:80"
+    depends_on:
+      - webserver
+
 
 volumes:
   postgres-db-volume:
