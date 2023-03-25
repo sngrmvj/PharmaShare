@@ -104,5 +104,7 @@ dist
 .tern-port
 
 backend/.idea/
+backend/.venv/
 frontend/node_modules/
+backend/__pycache__/
 frontend/package-lock.json

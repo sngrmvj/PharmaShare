@@ -11,32 +11,24 @@ services:
     volumes:
       - postgres-db-volume:/var/lib/postgresql/data
     restart: always
-  mongo:
-    image: mongo:latest
-    environment:
-      MONGO_INITDB_DATABASE: Prescriptions
-    volumes:
-      - ./mongo_data:/data/db
-    ports:
-      - "27017:27017"
-  webserver:
-    build: backend/
-    container_name: PharmaShare-Server
-    ports:
-      - "5000:5000"
-    environment:
-      MONGO_URI: mongodb://mongo:27017/Prescriptions
-      DATABASE_URL: postgresql://postgres:root@db:5432/PharmaShare
-    restart: always
-    depends_on:
-      postgres
-  interface:
-    build: frontend/
-    container_name: PharmaShare-UI
-    ports:
-      - "3000:80"
-    depends_on:
-      - webserver
+  # webserver:
+  #   build: backend/
+  #   container_name: PharmaShare-Server
+  #   ports:
+  #     - "5000:5000"
+  #   environment:
+  #     MONGO_URI: mongodb://mongo:27017/Prescriptions
+  #     DATABASE_URL: postgresql://postgres:root@db:5432/PharmaShare
+  #   restart: always
+  #   depends_on:
+  #     postgres
+  # interface:
+  #   build: frontend/
+  #   container_name: PharmaShare-UI
+  #   ports:
+  #     - "3000:80"
+  #   depends_on:
+  #     - webserver
 
 
 volumes:

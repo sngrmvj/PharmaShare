@@ -54,12 +54,17 @@ const Login = () => {
             }
         };
         
-        axios.put(`${LOGINURL}`, options) // if promise get you success, control enters .then
+        axios.put(`${LOGINURL}?type=${selectedOption}`, options) // if promise get you success, control enters .then
         .then(res => {
             if (res.status === 200) {
                 localStorage.setItem('isLoggedIn',true);
                 localStorage.setItem('email', res.data.email);
                 localStorage.setItem('fullname', res.data.fullname);
+                if (selectedOption === 'Supplier'){
+                    localStorage.setItem('user_type', 'Supplier');
+                } else {
+                    localStorage.setItem('user_type', 'Consumer');
+                }
                 navigate("/exercises");
             }
         })

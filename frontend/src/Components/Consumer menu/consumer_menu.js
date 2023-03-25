@@ -18,23 +18,30 @@ const ConsumerMenu = () => {
 
     const navigate = useNavigate();
 
-    const [rowData, setRowData] = useState([]);
+    const [rowDataTable1, setRowDataTable1] = useState([]);
+    const [rowDataTable2, setRowDataTable2] = useState([]);
 
 
-
-    const columns = [
+    const columnsTable1 = [
         { headerName: 'Tablet Name', field: 'tabletName' },
         { headerName: 'Manufacture Date', field: 'manufactureDate' },
         { headerName: 'Expiry Date', field: 'expiryDate' },
         { headerName: 'Person Name', field: 'personName' },
         { headerName: 'Address', field: 'address' },
         {
-            headerName: 'Make Requests',
+            headerName: 'Requests',
             field: 'make_request',
             cellRenderer: () => {
                 return '<button>Request Medicine</button>';
             },
         },
+    ];
+
+    const columnsTable2 = [
+        { headerName: 'Tablet Name', field: 'tabletName' },
+        { headerName: 'Manufacture Date', field: 'manufactureDate' },
+        { headerName: 'Expiry Date', field: 'expiryDate' },
+        { headerName: 'Status', field: 'status' },
     ];
 
 
@@ -99,21 +106,20 @@ const ConsumerMenu = () => {
 
 
             <div style={{padding:"20px", display:"flex", justifyContent:"center", alignContent:"center"}}>
-                <div className="ag-theme-alpine" style={{ height: '500px', width: '1400px' }}>
-                    <AgGridReact rowData={rowData} columnDefs={columns} />
+                <div className="ag-theme-alpine" style={{ height: '500px', width: '1200px' }}>
+                    <AgGridReact rowData={rowDataTable1} columnDefs={columnsTable1} />
                 </div>
             </div>
             <br/>
 
             
             {/* TODO 
-            
                 This table is basically the history of the tablests the consumer has requested for. This entry gets deleted from supplier table and 
                 pops up in consumer table tagged with the email id
             */}
             <div style={{padding:"20px", display:"flex", justifyContent:"center", alignContent:"center"}}>
-                <div className="ag-theme-alpine" style={{ height: '500px', width: '1400px' }}>
-                    <AgGridReact rowData={rowData} columnDefs={columns} />
+                <div className="ag-theme-alpine" style={{ height: '500px', width: '600px' }}>
+                    <AgGridReact rowData={rowDataTable2} columnDefs={columnsTable2} />
                 </div>
             </div>
             <br/>

@@ -58,7 +58,7 @@ const Signup = () => {
             data : data
         };
         
-        axios.post(`${SIGNUPURL}`, options)
+        axios.post(`${SIGNUPURL}?type=${selectedOption}`, options)
         .then(result=>{
             console.log(result);
             if(result.status === 200){
