@@ -73,13 +73,35 @@ def validate_user():
     
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @app.route("/add_surplus_medicine", methods=['POST'])
 def add_surplus_medication():
     try:
         request_body = request.get_json()
         data = request_body['data']
 
-        published_medicine = SupplierPublish(tablet_name=data[''],person_name=data[''], manufacture_date=data[''],expiry_date=data[''], address=data[''], contact=data[''], email=data['email'])
+        arguments = request.args
+        print(arguments)
+
+        published_medicine = SupplierPublish(tablet_name=data['tablet-name'],person_name=data['person-name'], manufacture_date=data['manufacture-date'],expiry_date=data['expiry-date'], address=data['address'], contact=data['phone-number'], email=arguments['email'])
+
+        db.session.add(published_medicine)
+        db.session.commit()
 
         if not published_medicine:
             raise Exception("Error in entering the surplus medication entry")
@@ -89,26 +111,6 @@ def add_surplus_medication():
         return jsonify({"error": f"{error}"}), 500
     else:
         return jsonify({'message': "Successfully added"}), 200
-
-
-
-
-@app.route("/request_medicine", methods=['POST'])
-def request_medication():
-    try:
-        request_body = request.get_json()
-        data = request_body['data']
-
-        requested_medicine = ConsumerRequest(consumer_name=data[''],supplier_name=data[''], tablet_name=data[''],prescription=data[''], consumer_email=data[''], supplier_email=data[''])
-
-        if not requested_medicine:
-            raise Exception("Error in entering the request medication entry")
-
-    except Exception as error:
-        print(f"Error - {error}")
-        return jsonify({"error": f"{error}"}), 500
-    else:
-        return jsonify({'message': "Successfully added in request medicine"}), 200
     
 
 
@@ -130,26 +132,58 @@ def get_supplier_requests():
         arguments = request.args
         consumer_results = ConsumerRequest.query.filter_by(supplier_email=arguments['email']).all()
 
-        if not consumer_results:
+        if consumer_results == None:
             raise Exception("Error in fetching the results of the requests raised for the mail. ")
         
-        results = []
+        if len(consumer_results) == 0:
+            return jsonify({'message': []}), 200
         
-        # for result in consumer_results:
-        #     results['tablet'] = result.tablet_name
-        #     results['consumer'] = result.consumer_name
-        #     results['consumer_email'] = result.consumer_email
-        #     results['status'] = result.status
-        #     results['created_at'] = result.created_at
-
+        results = []
         for result in consumer_results:
-            results.append(result.tablet_name,  result.consumer_name, result.consumer_email, result.status, result.created_at)
+            temp = {}
+            temp['tablet'] = result.tablet_name
+            temp['consumer'] = result.consumer_name
+            temp['consumer_email'] = result.consumer_email
+            temp['status'] = result.status
+            temp['created_at'] = result.created_at
+            results.append(temp)
+
+    except Exception as error:
+        print(traceback.format_exc())
+        print(f"Error - {error}")
+        return jsonify({"error": f"{error}"}), 500
+    else:
+        return jsonify({'message': results}), 200
+    
+
+@app.route("/list_out_medicines", methods=['GET'])
+def list_out_medicines():
+    try:
+
+        arguments = request.args
+        results = SupplierPublish.query.filter_by(email=arguments['email']).all()
+
+        if results == None:
+            raise Exception("Error in fetching the list out medicines for a particular supplier")
+        
+        if len(results) == 0:
+            return jsonify({'message': []}), 200
+        
+
+        medicine_list = []
+        for result in results:
+            medicine = {}
+            medicine['tablet'] = result.tablet_name
+            medicine['manufacture_date'] = result.manufacture_date
+            medicine['expiry_date'] = result.expiry_date
+            medicine['created_at'] = result.created_at
+            medicine_list.append(medicine)
 
     except Exception as error:
         print(f"Error - {error}")
         return jsonify({"error": f"{error}"}), 500
     else:
-        return jsonify({'message': results}), 200
+        return jsonify({'message': medicine_list}), 200
     
 
 
@@ -209,23 +243,37 @@ def update_status():
 
 
 
-@app.route("/list_out_medicines", methods=['GET'])
-def list_out_medicines():
+
+
+
+
+
+
+
+
+
+
+
+
+@app.route("/request_medicine", methods=['POST'])
+def request_medication():
     try:
+        request_body = request.get_json()
+        data = request_body['data']
 
-        arguments = request.args
-        results = SupplierPublish.query.filter_by(consumer_email=arguments['email']).all()
+        requested_medicine = ConsumerRequest(consumer_name=data[''],supplier_name=data[''], tablet_name=data[''],prescription=data[''], consumer_email=data[''], supplier_email=data[''])
 
-        if not results:
-            raise Exception("Error in fetching the list out medicines for a particular supplier")
+        db.session.add(requested_medicine)
+        db.session.commit()
+
+        if not requested_medicine:
+            raise Exception("Error in entering the request medication entry")
 
     except Exception as error:
         print(f"Error - {error}")
         return jsonify({"error": f"{error}"}), 500
     else:
-        return jsonify({'message': results}), 200
-
-
+        return jsonify({'message': "Successfully added in request medicine"}), 200
 
 
 @app.route("/consumer_menu", methods=['GET'])

@@ -1,6 +1,6 @@
 
 
-const BASE_URL = "http://127.0.0.1:5001/"
+const BASE_URL = "http://127.0.0.1:5001"
 const LOGINURL = `${BASE_URL}/user`;
 const SIGNUPURL = `${BASE_URL}/user`;
 const GET_SUPPLIER_PUBLICATIONS = `${BASE_URL}/get_all_requests`;

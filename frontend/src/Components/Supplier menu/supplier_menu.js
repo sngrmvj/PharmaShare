@@ -37,11 +37,28 @@ const SupplierMenu = () => {
 
     const [medicineData, setMedicineData] = useState([]);
     const columnsMedicineData = [
-        { headerName: 'Tablet Name', field: 'tablet' },
-        { headerName: 'Manufacture Date', field: 'manufacture_date' },
-        { headerName: 'Expiry Date', field: 'expiry_date' },
-        { headerName: 'Created', field: 'created_at' },
+        { headerName: 'Tablet Name', field: 'tablet', resizable: true },
+        { headerName: 'Manufacture Date', field: 'manufacture_date',resizable: true, width:200 },
+        { headerName: 'Expiry Date', field: 'expiry_date',resizable: true, width:200 },
+        { headerName: 'Created', field: 'created_at', resizable: true },
     ]
+
+    const [formData, setFormData] = useState({
+        'tablet-name': '',
+        'manufacture-date': '',
+        'expiry-date': '',
+        'person-name': '',
+        'city-name': '',
+        'address': '',
+        'phone-number': '',
+    });
+
+    const handleChange = e => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value,
+        });
+    };
 
 
     const all_added_surplus_medicines = () => {
@@ -63,7 +80,7 @@ const SupplierMenu = () => {
         .then(result=>{
             console.log(result);
             if (result.status === 200){
-                setMedicineData([...medicineData,result.message])
+                setMedicineData(result.data.message)
             } else {
                 toast.warn("Please check your parameters to fetch the request details")
             }
@@ -95,7 +112,7 @@ const SupplierMenu = () => {
         .then(result=>{
             console.log(result);
             if (result.status === 200){
-                setRowData([...rowData, result.message]);
+                setRowData(result.data.message);
             } else {
                 toast.warn("Please check your parameters to fetch the request details")
             }
@@ -110,8 +127,13 @@ const SupplierMenu = () => {
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        const formData = new FormData(event.target);
-        console.log(formData.get('table-name'));
+        const manufactureDate = new Date(formData['manufacture-date']);
+        const expiryDate = new Date(formData['expiry-date']);
+
+        if (manufactureDate >= expiryDate) {
+            toast.warn('Manufacture date must be less than expiry date');
+            return false;
+        }
 
         const options = {
             withCredentials: true,
@@ -124,19 +146,25 @@ const SupplierMenu = () => {
                 'Content-Type': 'application/json',
             },
 
-            data : {
-                email: localStorage.getItem('email'),
-                // password: password,
-            }
+            data : formData
         };
 
-
-        axios.post(`${ADD_SURPLUS_MEDICINE}`, options)
+        let email = localStorage.getItem('email');
+        axios.post(`${ADD_SURPLUS_MEDICINE}?email=${email}`, options)
         .then(result=>{
             console.log(result);
             if (result.status === 200){
                 toast.success("Successfully added");
                 all_added_surplus_medicines();
+                setFormData({
+                    'tablet-name': '',
+                    'manufacture-date': '',
+                    'expiry-date': '',
+                    'person-name': '',
+                    'city-name': '',
+                    'address': '',
+                    'phone-number': '',
+                });
             } else {
                 toast.warn("Please check your parameters to fetch the request details")
             }
@@ -151,6 +179,7 @@ const SupplierMenu = () => {
 
     useEffect(() => {
         getSubmissions();
+        all_added_surplus_medicines();
     }, []);
 
 
@@ -171,25 +200,27 @@ const SupplierMenu = () => {
                     <div className='tabletSubmissionForm'>
                         <form onSubmit={handleSubmit}>
                             <label for="tablet-name">Tablet Name:</label> <br/>
-                            <input type="text" id="tablet-name" name="tablet-name" required /><br/><br/>
+                            <input type="text" id="tablet-name" name="tablet-name" required onChange={handleChange} /><br/><br/>
 
                             <label for="manufacture-date">Manufacture Date:</label><br/>
-                            <input type="date" id="manufacture-date" name="manufacture-date" required /><br/><br/>
+                            <input type="date" id="manufacture-date" name="manufacture-date" required onChange={handleChange} /><br/><br/>
 
                             <label for="expiry-date">Expiry Date:</label><br/>
-                            <input type="date" id="expiry-date" name="expiry-date" required /><br/><br/>
+                            <input type="date" id="expiry-date" name="expiry-date" required onChange={handleChange} /><br/><br/>
 
                             <label for="person-name">Person Name:</label> <br/>
-                            <input type="text" id="person-name" name="person-name" required /><br/><br/>
+                            <input type="text" id="person-name" name="person-name" required onChange={handleChange} /><br/><br/>
 
                             <label for="city-name">City:</label> <br/>
-                            <input type="text" id="city-name" name="city-name" required /><br/><br/>
+                            <input type="text" id="city-name" name="city-name" required onChange={handleChange} /><br/><br/>
 
                             <label for="address">Address:</label><br/>
-                            <textarea id="address" name="address" rows="4" cols="50" required></textarea><br/><br/>
+                            <textarea id="address" name="address" rows="4" cols="50" required onChange={handleChange}></textarea><br/><br/>
 
                             <label for="phone-number">Phone Number:</label><br/>
-                            <input type="tel" id="phone-number" name="phone-number" required /><br/><br/>
+                            <input type="tel" id="phone-number" name="phone-number" maxLength={10} required onChange={handleChange} /><br/><br/>
+                            {/* /^\+1 \([0-9]{3}\) [0-9]{3}-[0-9]{4}$/ This is US regex number  */}
+
 
                             <button type="submit" className='btn'>Publish</button>
                         </form>
@@ -207,7 +238,7 @@ const SupplierMenu = () => {
             <br/><br/>
 
             <div style={{padding:"20px", display:"flex", justifyContent:"center", alignContent:"center"}}>
-                <div className="ag-theme-alpine" style={{ height: '500px', width: '1200px' }}>
+                <div className="ag-theme-alpine" style={{ height: '500px', width: '900px' }}>
                     <AgGridReact rowData={medicineData} columnDefs={columnsMedicineData} />
                 </div>
             </div>

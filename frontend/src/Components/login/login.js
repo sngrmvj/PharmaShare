@@ -62,10 +62,12 @@ const Login = () => {
                 localStorage.setItem('fullname', res.data.fullname);
                 if (selectedOption === 'Supplier'){
                     localStorage.setItem('user_type', 'Supplier');
+                    navigate("/suppliermenu");
                 } else {
                     localStorage.setItem('user_type', 'Consumer');
+                    navigate("/consumermenu");
                 }
-                navigate("/exercises");
+                
             }
         })
         .catch(error => {
