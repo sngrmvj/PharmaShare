@@ -58,12 +58,13 @@ const Login = () => {
         .then(res => {
             if (res.status === 200) {
                 localStorage.setItem('isLoggedIn',true);
-                localStorage.setItem('email', res.data.email);
                 localStorage.setItem('fullname', res.data.fullname);
                 if (selectedOption === 'Supplier'){
+                    localStorage.setItem('supplierEmail', res.data.email);
                     localStorage.setItem('user_type', 'Supplier');
                     navigate("/suppliermenu");
                 } else {
+                    localStorage.setItem('consumerEmail', res.data.email);
                     localStorage.setItem('user_type', 'Consumer');
                     navigate("/consumermenu");
                 }
@@ -116,21 +117,21 @@ const Login = () => {
                                 /><br/><br/>
 
                                 <div>
-                                    <label class="container" style={{fontSize:"18px"}}>Supplier
+                                    <label className="container" style={{fontSize:"18px"}}>Supplier
                                         <input type="radio"
                                             value="Supplier"
                                             checked={selectedOption === 'Supplier'}
                                             onChange={handleOptionChange}
                                         />
-                                        <span class="checkmark"></span>
+                                        <span className="checkmark"></span>
                                     </label><br/>
-                                    <label class="container" style={{fontSize:"18px"}}>Consumer
+                                    <label className="container" style={{fontSize:"18px"}}>Consumer
                                         <input type="radio"
                                             value="Consumer"
                                             checked={selectedOption === 'Consumer'}
                                             onChange={handleOptionChange}
                                         />
-                                        <span class="checkmark"></span>
+                                        <span className="checkmark"></span>
                                     </label>
                                 </div> <br/><br/>
 

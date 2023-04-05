@@ -19,4 +19,4 @@ EXPOSE 5000
 
 # Running the executor file. 
 # Note We need to separate it rather than keeping it in one command
-ENTRYPOINT [ "python", "main.py" ]
+ENTRYPOINT [ "python", "run.py" ]

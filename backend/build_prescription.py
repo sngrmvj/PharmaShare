@@ -64,8 +64,8 @@ def create_medication_request(patient_name, medication_name, practitioner_name, 
                 "timing": {
                     "repeat": {
                         "boundsDuration": {
-                            "value": dosage_instructions['value'],
-                            "unit": dosage_instructions['part_of_day'],
+                            "value": dosage_instructions['tablet_count'],
+                            "unit": 'd',
                             "system": "http://unitsofmeasure.org",
                             "code": "d"
                         },

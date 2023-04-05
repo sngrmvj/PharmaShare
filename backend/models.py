@@ -36,6 +36,7 @@ class SupplierPublish(db.Model):
     person_name = db.Column(db.String(100), nullable=False)
     manufacture_date = db.Column(db.Date, nullable=False)
     expiry_date = db.Column(db.Date, nullable=False)
+    city = db.Column(db.String(128), nullable=False)
     address = db.Column(db.String(100), nullable=False)
     contact = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
@@ -54,6 +55,8 @@ class ConsumerRequest(db.Model):
     tablet_name = db.Column(db.String(100), nullable=False)
     prescription = db.Column(db.JSON, nullable=False)
     status = db.Column(db.String(100)) # Approve / Reject
+    supplier_contact = db.Column(db.String(20), nullable=False)
+    consumer_contact = db.Column(db.String(20), nullable=False)
     consumer_email = db.Column(db.String(120), unique=True, nullable=False) # To display all the items the person has requested for we can retrieve all items based on this
     supplier_email  = db.Column(db.String(120), unique=True, nullable=False) # To display all the the items for the supplier to display them 
     # We might need to mark it blank once he approves or reject.

@@ -17,20 +17,41 @@ import { GET_SUPPLIER_PUBLICATIONS, ADD_SURPLUS_MEDICINE, LIST_OUT_MEDICINES } f
 const SupplierMenu = () => {
 
     const navigate = useNavigate();
+    const [fullName, setFullName] = useState("");
+
+
+    const logout = () =>{
+        localStorage.setItem('isLoggedIn',false);
+        if (localStorage.getItem('user_type') == 'Supplier'){
+            localStorage.removeItem('supplierEmail');
+        } else {
+            localStorage.removeItem('consumerEmail');
+        }
+        localStorage.removeItem('user_type');
+        localStorage.removeItem('fullname');
+        navigate("/");
+    }
+
+
+
+    const navigateToViewMedicine = (tablet_name) => {
+        navigate("/viewrequest",{ state: { tablet_name: tablet_name } })
+    }
 
     const [rowData, setRowData] = useState([]);
     const columns = [
         { headerName: 'Tablet Name', field: 'tablet' },
         { headerName: 'Consumer Name', field: 'consumer' },
         { headerName: 'Consumer Email', field: 'consumer_email' },
+        { headerName: 'Consumer Contact', field: 'consumer_phone' },
         { headerName: 'Status', field: 'status' },
         { headerName: 'Created', field: 'created_at' },
         {
             headerName: 'Requests',
             field: 'requests',
-            cellRenderer: () => {
-                return '<button>View Request</button>';
-            },
+            cellRenderer: (params) =>{
+                return <a onClick={() => navigateToViewMedicine(params.data['tablet'] )} style={{color:'#046FAA',cursor:'pointer', textAlign:'center'}}>View Request</a>
+            }
         },
     ];
 
@@ -75,10 +96,9 @@ const SupplierMenu = () => {
             },
         };
         
-        let email = localStorage.getItem('email');
+        let email = localStorage.getItem('supplierEmail');
         axios.get(`${LIST_OUT_MEDICINES}?email=${email}`, options)
         .then(result=>{
-            console.log(result);
             if (result.status === 200){
                 setMedicineData(result.data.message)
             } else {
@@ -107,10 +127,9 @@ const SupplierMenu = () => {
 
         };
         
-        let email = localStorage.getItem('email');
+        let email = localStorage.getItem('supplierEmail');
         axios.get(`${GET_SUPPLIER_PUBLICATIONS}?email=${email}`, options)
         .then(result=>{
-            console.log(result);
             if (result.status === 200){
                 setRowData(result.data.message);
             } else {
@@ -149,10 +168,9 @@ const SupplierMenu = () => {
             data : formData
         };
 
-        let email = localStorage.getItem('email');
+        let email = localStorage.getItem('supplierEmail');
         axios.post(`${ADD_SURPLUS_MEDICINE}?email=${email}`, options)
         .then(result=>{
-            console.log(result);
             if (result.status === 200){
                 toast.success("Successfully added");
                 all_added_surplus_medicines();
@@ -180,10 +198,13 @@ const SupplierMenu = () => {
     useEffect(() => {
         getSubmissions();
         all_added_surplus_medicines();
+        getUser();
     }, []);
 
 
-
+    const getUser = () =>{
+        setFullName(localStorage.getItem('fullname'));
+    }
 
 
     return (
@@ -191,8 +212,9 @@ const SupplierMenu = () => {
 
 
             <div style={{padding:"20px"}}>
-                <header style={{color:"#2E8DCD", fontSize:"20px"}}><b>PharmaShare</b></header>
-            </div><br/> <br/>
+                <label style={{color:"#2E8DCD", fontSize:"20px"}}><span style={{fontSize:"20px",color:"#046FAA", marginRight:"18px"}}><b>PharmaShare</b> <br/> <span style={{fontSize:"12px",padding:"0px",color:"#046FAA"}}>({fullName})</span></span></label>
+                <label style={{float:"right", color:"#046FAA", cursor:"pointer"}} onClick={logout}><b>Logout</b></label>
+            </div><br/>
 
 
             <div>
@@ -231,7 +253,7 @@ const SupplierMenu = () => {
             <br/><br/>
 
             <div style={{padding:"20px", display:"flex", justifyContent:"center", alignContent:"center"}}>
-                <div className="ag-theme-alpine" style={{ height: '500px', width: '1200px' }}>
+                <div className="ag-theme-alpine" style={{ height: '500px', width: '1400px' }}>
                     <AgGridReact rowData={rowData} columnDefs={columns} />
                 </div>
             </div>

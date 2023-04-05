@@ -96,9 +96,8 @@ def add_surplus_medication():
         data = request_body['data']
 
         arguments = request.args
-        print(arguments)
 
-        published_medicine = SupplierPublish(tablet_name=data['tablet-name'],person_name=data['person-name'], manufacture_date=data['manufacture-date'],expiry_date=data['expiry-date'], address=data['address'], contact=data['phone-number'], email=arguments['email'])
+        published_medicine = SupplierPublish(tablet_name=data['tablet-name'],person_name=data['person-name'], manufacture_date=data['manufacture-date'],expiry_date=data['expiry-date'],city=data['city-name'], address=data['address'], contact=data['phone-number'], email=arguments['email'])
 
         db.session.add(published_medicine)
         db.session.commit()
@@ -144,6 +143,7 @@ def get_supplier_requests():
             temp['tablet'] = result.tablet_name
             temp['consumer'] = result.consumer_name
             temp['consumer_email'] = result.consumer_email
+            temp['consumer_phone'] = result.consumer_contact
             temp['status'] = result.status
             temp['created_at'] = result.created_at
             results.append(temp)
@@ -155,6 +155,10 @@ def get_supplier_requests():
     else:
         return jsonify({'message': results}), 200
     
+
+
+
+
 
 @app.route("/list_out_medicines", methods=['GET'])
 def list_out_medicines():
@@ -187,6 +191,9 @@ def list_out_medicines():
     
 
 
+
+
+
 @app.route("/view_request", methods=['GET'])
 def fetch_prescription_based_on_tablet():
     """
@@ -208,6 +215,7 @@ def fetch_prescription_based_on_tablet():
         for result in consumer_results:
             results['tablet'] = result.tablet_name
             results['consumer'] = result.consumer_name
+            results['consumer_phone'] = result.consumer_contact
             results['prescription'] = result.prescription
             results['consumer_email'] = result.consumer_email
 
@@ -230,8 +238,9 @@ def update_status():
 
     try:
         data = request.get_json()
-        result = ConsumerRequest.query.filter_by(id=data['id']).first()
-        result.status = data['status']
+        print(data)
+        result = ConsumerRequest.query.filter_by(tablet_name=data['data']['tablet_name']).first()
+        result.status = data['data']['status']
         db.session.commit()
 
     except Exception as error:
@@ -261,7 +270,24 @@ def request_medication():
         request_body = request.get_json()
         data = request_body['data']
 
-        requested_medicine = ConsumerRequest(consumer_name=data[''],supplier_name=data[''], tablet_name=data[''],prescription=data[''], consumer_email=data[''], supplier_email=data[''])
+        requested_medicine = ConsumerRequest(
+            consumer_name=data['formData']['your-name'],
+            supplier_name=data['supplier_name'], 
+            tablet_name=data['tablet_name'],
+            prescription={
+                'patient-name': data['formData']['patient-name'],
+                'practitioner-name': data['formData']['practitioner-name'],
+                'condition-name': data['formData']['condition-name'],
+                'instructions-name': data['formData']['instructions-name'],
+                'frequency-name': data['formData']['frequency-name'],
+                'tablet_count': data['formData']['tablet_count'],
+                'concentration-name': data['formData']['concentration-name']
+            }, 
+            supplier_contact=data['supplier_contact'] ,
+            consumer_contact=data['formData']['consumer-phone'] ,
+            consumer_email=data['consumer_email'], 
+            supplier_email=data['supplier_email']
+        )
 
         db.session.add(requested_medicine)
         db.session.commit()
@@ -274,6 +300,36 @@ def request_medication():
         return jsonify({"error": f"{error}"}), 500
     else:
         return jsonify({'message': "Successfully added in request medicine"}), 200
+    
+
+
+
+
+
+@app.route("/get_locations", methods=['GET'])
+def get_all_locations():
+
+    try:
+
+        """
+            To be called in consumer menu and 1st table
+        """
+
+        locations = db.session.query(SupplierPublish.city).distinct().all()
+
+        if len(locations) == 0:
+            return jsonify({'message': []}), 200
+        
+        results = [result.city for result in locations]
+
+    except Exception as error:
+        print(f"Error - {error}")
+        return jsonify({"error": f"{error}"}), 500
+    else:
+        return jsonify({'message': results}), 200
+
+
+
 
 
 @app.route("/consumer_menu", methods=['GET'])
@@ -285,7 +341,32 @@ def fetch_table1():
         """
 
         arguments = request.args
-        results = SupplierPublish.query.join(ConsumerRequest, and_( ConsumerRequest.tablet_name == SupplierPublish.tablet_name, ConsumerRequest.status != "Approved",)).filter(SupplierPublish.address.like(f"%{arguments['location']}%")).all()
+        supplier_requests = SupplierPublish.query.filter_by(city=arguments['location']).all()
+
+        if len(supplier_requests) == 0:
+            return jsonify({'message': []}), 200
+
+        results = []
+        for result in supplier_requests:
+            temp = {}
+            temp['tabletName'] = result.tablet_name
+            exists = ConsumerRequest.query.filter_by(tablet_name=result.tablet_name).all() # Checking whether the item is Approved or not
+            isApproved = False 
+            if exists:
+                for line in exists:
+                    if line.status == "Approved":
+                        isApproved = True 
+                        break
+            if isApproved:
+                continue
+            temp['manufactureDate'] = result.manufacture_date
+            temp['expiryDate'] = result.expiry_date
+            temp['personName'] = result.person_name
+            temp['supplier_email'] = result.email
+            temp['address'] = result.address
+            temp['contact'] = result.contact
+            results.append(temp)
+
 
     except Exception as error:
         print(f"Error - {error}")
@@ -293,6 +374,8 @@ def fetch_table1():
     else:
         return jsonify({'message': results}), 200
     
+
+
 
 
 @app.route("/consumer_menu_table2", methods=['GET'])
@@ -306,11 +389,27 @@ def fetch_table2():
         arguments = request.args
         consumer_requests = ConsumerRequest.query.filter_by(consumer_email=arguments['email']).all()
 
+
+        if len(consumer_requests) == 0:
+            return jsonify({'message': []}), 200
+
+        results = []
+        for result in consumer_requests:
+            temp = {}
+            temp['tabletName'] = result.tablet_name
+            temp['status'] = result.status
+            temp['contact'] = result.supplier_contact
+            temp['personName'] = result.supplier_name
+            results.append(temp)
+
     except Exception as error:
         print(f"Error - {error}")
         return jsonify({"error": f"{error}"}), 500
     else:
-        return jsonify({'message': consumer_requests}), 200
+        return jsonify({'message': results}), 200
+
+
+
 
 
 

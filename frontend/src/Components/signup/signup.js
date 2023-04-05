@@ -126,21 +126,21 @@ const Signup = () => {
 
 
                                 <div>
-                                    <label class="container" style={{fontSize:"18px"}}>Supplier
+                                    <label className="container" style={{fontSize:"18px"}}>Supplier
                                         <input type="radio"
                                             value="Supplier"
                                             checked={selectedOption === 'Supplier'}
                                             onChange={handleOptionChange}
                                         />
-                                        <span class="checkmark"></span>
+                                        <span className="checkmark"></span>
                                     </label><br/>
-                                    <label class="container" style={{fontSize:"18px"}}>Consumer
+                                    <label className="container" style={{fontSize:"18px"}}>Consumer
                                         <input type="radio"
                                             value="Consumer"
                                             checked={selectedOption === 'Consumer'}
                                             onChange={handleOptionChange}
                                         />
-                                        <span class="checkmark"></span>
+                                        <span className="checkmark"></span>
                                     </label>
                                 </div> <br/><br/>
 

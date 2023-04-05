@@ -21,7 +21,7 @@ function App() {
         <Route exact path='/suppliermenu' element={<SupplierMenu/>}></Route>
         <Route exact path='/viewrequest' element={<ViewRequest/>}></Route>
         <Route exact path='/consumermenu' element={<ConsumerMenu/>}></Route>
-        <Route exact path='/request' element={<RequestMedicine/>}></Route>
+        <Route exact path='/request_medicine' element={<RequestMedicine/>}></Route>
       </Routes>
     </Router>
   );
