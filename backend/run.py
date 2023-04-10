@@ -219,6 +219,8 @@ def fetch_prescription_based_on_tablet():
             results['prescription'] = result.prescription
             results['consumer_email'] = result.consumer_email
 
+        print(results)
+
     except Exception as error:
         print(f"Error - {error}")
         return jsonify({"error": f"{error}"}), 500
@@ -351,13 +353,13 @@ def fetch_table1():
             temp = {}
             temp['tabletName'] = result.tablet_name
             exists = ConsumerRequest.query.filter_by(tablet_name=result.tablet_name).all() # Checking whether the item is Approved or not
-            isApproved = False 
+            actionTaken = False 
             if exists:
                 for line in exists:
-                    if line.status == "Approved":
-                        isApproved = True 
+                    if line.status == "Approved" or line.status == "Rejected":
+                        actionTaken = True 
                         break
-            if isApproved:
+            if actionTaken:
                 continue
             temp['manufactureDate'] = result.manufacture_date
             temp['expiryDate'] = result.expiry_date

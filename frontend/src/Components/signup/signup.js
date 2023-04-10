@@ -60,7 +60,6 @@ const Signup = () => {
         
         axios.post(`${SIGNUPURL}?type=${selectedOption}`, options)
         .then(result=>{
-            console.log(result);
             if(result.status === 200){
                 navigate("/");
             } else {

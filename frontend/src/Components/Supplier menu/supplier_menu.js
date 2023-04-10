@@ -222,27 +222,26 @@ const SupplierMenu = () => {
                     <div className='tabletSubmissionForm'>
                         <form onSubmit={handleSubmit}>
                             <label for="tablet-name">Tablet Name:</label> <br/>
-                            <input type="text" id="tablet-name" name="tablet-name" required onChange={handleChange} /><br/><br/>
+                            <input type="text" id="tablet-name" name="tablet-name" value={formData['tablet-name']} required onChange={handleChange} /><br/><br/>
 
                             <label for="manufacture-date">Manufacture Date:</label><br/>
-                            <input type="date" id="manufacture-date" name="manufacture-date" required onChange={handleChange} /><br/><br/>
+                            <input type="date" id="manufacture-date" name="manufacture-date" value={formData['manufacture-date']} required onChange={handleChange} /><br/><br/>
 
                             <label for="expiry-date">Expiry Date:</label><br/>
-                            <input type="date" id="expiry-date" name="expiry-date" required onChange={handleChange} /><br/><br/>
+                            <input type="date" id="expiry-date" name="expiry-date" value={formData['expiry-date']} required onChange={handleChange} /><br/><br/>
 
                             <label for="person-name">Person Name:</label> <br/>
-                            <input type="text" id="person-name" name="person-name" required onChange={handleChange} /><br/><br/>
+                            <input type="text" id="person-name" name="person-name" value={formData['person-name']} required onChange={handleChange} /><br/><br/>
 
                             <label for="city-name">City:</label> <br/>
-                            <input type="text" id="city-name" name="city-name" required onChange={handleChange} /><br/><br/>
+                            <input type="text" id="city-name" name="city-name" value={formData['city-name']} required onChange={handleChange} /><br/><br/>
 
                             <label for="address">Address:</label><br/>
-                            <textarea id="address" name="address" rows="4" cols="50" required onChange={handleChange}></textarea><br/><br/>
+                            <textarea id="address" name="address" rows="4" cols="50" value={formData.address} required onChange={handleChange}></textarea><br/><br/>
 
                             <label for="phone-number">Phone Number:</label><br/>
-                            <input type="tel" id="phone-number" name="phone-number" maxLength={10} required onChange={handleChange} /><br/><br/>
+                            <input type="tel" id="phone-number" name="phone-number" value={formData['phone-number']} maxLength={10} required onChange={handleChange} /><br/><br/>
                             {/* /^\+1 \([0-9]{3}\) [0-9]{3}-[0-9]{4}$/ This is US regex number  */}
-
 
                             <button type="submit" className='btn'>Publish</button>
                         </form>

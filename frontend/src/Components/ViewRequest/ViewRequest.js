@@ -12,14 +12,14 @@ import { SHOW_REQUEST, UPDATE_STATUS } from '../../constants';
 
 const ViewRequest = () => {
 
-    const {state} = useLocation();
+    const location = useLocation();
     const navigate = useNavigate();
     const [fullName, setFullName] = useState();
     const [tablet_name, setTabletName] = useState();
     const [consumer_name, setConsumer] = useState();
     const [consumer_email, setConsumerEmail] = useState();
     const [consumer_phone, setConsumerPhone] = useState();
-    const [prescription, setPrescription] = useState();
+    const [prescription, setPrescription] = useState("");
 
 
 
@@ -41,7 +41,7 @@ const ViewRequest = () => {
         navigate("/suppliermenu");
     }
 
-    const getSubmissions = (to_be_used_tablet) => {
+    const getSubmissions = () => {
 
         const options = {
             withCredentials: true,
@@ -55,14 +55,23 @@ const ViewRequest = () => {
             },
 
         };
-        
-        axios.get(`${SHOW_REQUEST}?tablet=${to_be_used_tablet}`, options)
+
+        axios.get(`${SHOW_REQUEST}?tablet=${location.state.tablet_name}`, options)
         .then(result=>{
-            console.log(result);
             if (result.status === 200){
                 setConsumer(result.data.message.consumer);
                 setTabletName(result.data.message.tablet);
-                setPrescription(result.data.message.prescription);
+                setPrescription(
+                    <span>
+                        <label>Patient Name: <b>{result.data.message.prescription['patient-name']}</b></label> <br/> <br/>
+                        <label>Practitioner Name: <b>{result.data.message.prescription['practitioner-name']}</b></label><br/> <br/>
+                        <label>Condition Name: <b>{result.data.message.prescription['condition-name']}</b></label><br/> <br/>
+                        <label>Instructions: <b>{result.data.message.prescription['instructions-name']}</b></label><br/> <br/>
+                        <label>Frequency: <b>{result.data.message.prescription['frequency-name']}</b></label><br/> <br/>
+                        <label>Tablet Count: <b>{result.data.message.prescription['tablet_count']}</b></label><br/> <br/>
+                        <label>Concentration: <b>{result.data.message.prescription['concentration-name']}</b></label><br/> <br/>
+                    </span>
+                );
                 setConsumerEmail(result.data.message.consumer_email);
                 setConsumerPhone(result.data.message.consumer_phone)
             }
@@ -133,12 +142,15 @@ const ViewRequest = () => {
         })
     }
 
-    useEffect(() => {
-        if (state != null){
-            const { tablet_name } = state;
-            setTabletName(tablet_name);
+
+    useEffect(() =>{
+        // This gets called when the screen loads ....
+        // Here we need to make an api call to fetch the video platform data
+        let loginCheck = localStorage.getItem('isLoggedIn');
+        if(loginCheck === 'false'){
+            navigate("/");
         }
-        getSubmissions(tablet_name);
+        getSubmissions();
         getUser();
     }, []);
 
@@ -165,15 +177,8 @@ const ViewRequest = () => {
                         <label>Person Name: <b>{consumer_name}</b></label> <br/><br/>
                         <label>Email: <b>{consumer_email}</b></label><br/><br/>
                         <label>Contact: <b>{consumer_phone}</b></label><br/><br/>
-                        <span>
-                            <label>Patient Name: <b>{prescription['patient-name']}</b></label> <br/> <br/>
-                            <label>Practitioner Name: <b>{prescription['practitioner-name']}</b></label><br/> <br/>
-                            <label>Condition Name: <b>{prescription['condition-name']}</b></label><br/> <br/>
-                            <label>Instructions: <b>{prescription['instructions-name']}</b></label><br/> <br/>
-                            <label>Frequency: <b>{prescription['frequency-name']}</b></label><br/> <br/>
-                            <label>Tablet Count: <b>{prescription['tablet_count']}</b></label><br/> <br/>
-                            <label>Concentration: <b>{prescription['concentration-name']}</b></label><br/> <br/>
-                        </span>
+
+                        <span>{prescription}</span>
                         <br/><br/>
 
                         <button type="submit" className='btn' onClick={handleApprove}>Approve</button>

@@ -39,7 +39,7 @@ class SupplierPublish(db.Model):
     city = db.Column(db.String(128), nullable=False)
     address = db.Column(db.String(100), nullable=False)
     contact = db.Column(db.String(20), nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
+    email = db.Column(db.String(120), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 
@@ -57,7 +57,7 @@ class ConsumerRequest(db.Model):
     status = db.Column(db.String(100)) # Approve / Reject
     supplier_contact = db.Column(db.String(20), nullable=False)
     consumer_contact = db.Column(db.String(20), nullable=False)
-    consumer_email = db.Column(db.String(120), unique=True, nullable=False) # To display all the items the person has requested for we can retrieve all items based on this
-    supplier_email  = db.Column(db.String(120), unique=True, nullable=False) # To display all the the items for the supplier to display them 
+    consumer_email = db.Column(db.String(120), nullable=False) # To display all the items the person has requested for we can retrieve all items based on this
+    supplier_email  = db.Column(db.String(120), nullable=False) # To display all the the items for the supplier to display them 
     # We might need to mark it blank once he approves or reject.
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
