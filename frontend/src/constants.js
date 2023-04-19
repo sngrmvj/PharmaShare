@@ -1,6 +1,6 @@
 
 
-const BASE_URL = "http://0.0.0.0:5001"
+const BASE_URL = "https://pharmashare-backend--x1ueazt.delightfulcliff-2d3b3da0.eastus.azurecontainerapps.io"
 const LOGINURL = `${BASE_URL}/user`;
 const SIGNUPURL = `${BASE_URL}/user`;
 const GET_SUPPLIER_PUBLICATIONS = `${BASE_URL}/get_all_requests`;
